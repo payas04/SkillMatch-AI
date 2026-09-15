@@ -9,10 +9,13 @@ import { interviewRouter } from "./routes/interview.routes.js";
 
 // Initialize express app
 const app = express();
+// REQUIRED for cookies over HTTPS behind Render's reverse proxy
+app.set("trust proxy", 1);
+
 // Enable CORS for requests from the frontend
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: process.env.CLIENT_URL,
     credentials: true,
   }),
 );

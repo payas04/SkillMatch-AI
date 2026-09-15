@@ -15,6 +15,7 @@ const refreshTokenCookieOptions = {
   secure: isProduction,
   // 'none' is required for cross-domain cookies in production, 'lax' works for localhost
   sameSite: isProduction ? "none" : "lax",
+  partitioned: isProduction,
   maxAge: 7 * 24 * 60 * 60 * 1000, //7 Days
 };
 /**

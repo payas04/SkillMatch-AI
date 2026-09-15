@@ -102,7 +102,13 @@ JobDescription: ${jobDescription}  `;
 async function generatePdfFromHtml(htmlContent) {
   const browser = await puppeteer.launch({
     headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage", // Prevents memory crashes on 512MB RAM servers
+      "--single-process",
+      "--no-zygote",
+    ],
   });
   try {
     const page = await browser.newPage();
