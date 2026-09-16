@@ -9,14 +9,11 @@ import {
 
 const isProduction = process.env.NODE_ENV === "production"; //check env for development stage
 const refreshTokenCookieOptions = {
-  // Secure (HTTPS) is required in production, but turned off for localhost HTTP
   httpOnly: true,
-  // 'none' is required for cross-domain cookies in production, 'lax' works for localhost
-  secure: isProduction,
-  // 'none' is required for cross-domain cookies in production, 'lax' works for localhost
-  sameSite: isProduction ? "none" : "lax",
-  partitioned: isProduction,
-  maxAge: 7 * 24 * 60 * 60 * 1000, //7 Days
+  secure: true, // MUST be true for HTTPS
+  sameSite: "none", // MUST be 'none' for cross-domain (Vercel <-> Render)
+  partitioned: true, // REQUIRED by modern Chrome/Edge for cross-site cookies
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 };
 /**
  * @name registerUserController
