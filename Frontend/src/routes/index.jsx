@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
-import OAuthSuccess from "../pages/OauthSuccess";
+import OAuthSuccess from "../pages/OAuthSuccess";
 import Home from "../pages/Home";
 import PublicRoute from "../components/PublicRoute";
 import ProtectedRoute from "../components/ProtectedRoute";
