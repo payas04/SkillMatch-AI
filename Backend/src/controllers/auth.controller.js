@@ -166,7 +166,7 @@ async function googleCallbackController(req, res) {
 
     res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
     const clientUrl = process.env.CLIENT_URL;
-    return res.redirect(`${clientUrl}/oauth-success`);
+    return res.redirect(`${clientUrl}/oauth-success?token=${accessToken}`);
   } catch (error) {
     console.error("Error in googleCallbackController", error);
     const clientUrl = process.env.CLIENT_URL;
