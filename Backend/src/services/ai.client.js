@@ -18,7 +18,7 @@ const interviewReportSchema = z.object({
       question: z
         .string()
         .describe(
-          "The technical questions that can be asked in the interview (Minimum 25 - Maximum 50)",
+          "The technical questions that can be asked in the interview (Minimum 15 - Maximum 50)",
         ),
       intention: z
         .string()
@@ -89,7 +89,7 @@ SelfDescription: ${selfDescription}
 JobDescription: ${jobDescription}  `;
 
   const response = await ai.models.generateContent({
-    model: "gemini-3.5-flash",
+    model: "gemini-3.6-flash",
     contents: prompt,
     config: {
       responseMimeType: "application/json",
@@ -160,7 +160,7 @@ OUTPUT FORMAT:
 Return only a JSON object matching the given schema, with a single "html" field containing the complete HTML document as a string. Do not include markdown code fences or any commentary outside the JSON.`;
 
   const response = await ai.models.generateContent({
-    model: "gemini-3.5-flash",
+    model: "gemini-3.6-flash",
     contents: prompt,
     config: {
       responseMimeType: "application/json",
