@@ -1,7 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 import "dotenv/config";
 import { z } from "zod";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
@@ -101,14 +102,9 @@ JobDescription: ${jobDescription}  `;
 
 async function generatePdfFromHtml(htmlContent) {
   const browser = await puppeteer.launch({
-    headless: true,
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage", // Prevents memory crashes on 512MB RAM servers
-      "--single-process",
-      "--no-zygote",
-    ],
+    args: chromium.args,
+    executablePath: await chromium.executablePath(),
+    headless: chromium.headless,
   });
   try {
     const page = await browser.newPage();
