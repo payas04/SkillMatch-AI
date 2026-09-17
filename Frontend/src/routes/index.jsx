@@ -6,6 +6,7 @@ import Home from "../pages/Home";
 import PublicRoute from "../components/PublicRoute";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Interview from "../pages/Interview";
+import OAuthSucces from "../pages/OAuthSuccess";
 const router = createBrowserRouter([
   // Redirect root "/" to "/home"
   {
@@ -40,7 +41,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/oauth-success",
-    element: <OAuthSuccess />,
+    element: <OAuthSucces />,
   },
   // 404 Catch-all
 
