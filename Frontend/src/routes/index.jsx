@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
-import OAuthSuccess from "../pages/OAuthSuccess";
+
 import Home from "../pages/Home";
 import PublicRoute from "../components/PublicRoute";
 import ProtectedRoute from "../components/ProtectedRoute";
@@ -36,13 +36,14 @@ const router = createBrowserRouter([
         path: "/register",
         element: <RegisterPage />,
       },
-      {
-        path: "/oauth-success",
-        element: <OAuthSuccess />,
-      },
     ],
   },
+  {
+    path: "/oauth-success",
+    element: <OAuthSuccess />,
+  },
   // 404 Catch-all
+
   {
     path: "*",
     element: <Navigate to="/home" replace />,
