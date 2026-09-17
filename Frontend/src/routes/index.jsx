@@ -37,11 +37,11 @@ const router = createBrowserRouter([
         path: "/register",
         element: <RegisterPage />,
       },
+      {
+        path: "/oauth-success",
+        element: <OAuthSucces />,
+      },
     ],
-  },
-  {
-    path: "/oauth-success",
-    element: <OAuthSucces />,
   },
   // 404 Catch-all
 
