@@ -39,13 +39,13 @@ const RegisterPage = () => {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 text-white">
-      <div className="w-full max-w-md bg-white/5 border border-white/10 rounded-2xl p-8 shadow-2xl backdrop-blur-md">
+      <div className="w-full max-w-md bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-5 sm:p-8 shadow-2xl backdrop-blur-md">
         {/* Brand Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
             SkillMatch <span className="text-indigo-400">AI</span>
           </h1>
-          <p className="text-sm text-gray-400 mt-2">
+          <p className="text-xs sm:text-sm text-gray-400 mt-1.5 sm:mt-2">
             Create an account to start generating tailored interview plans.
           </p>
         </div>
