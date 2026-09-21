@@ -12,7 +12,7 @@ const userSchema = mongoose.Schema({
     required: true,
   },
   password: {
-    type: String, //password not required as users can also login with OAuth
+    type: String,
   },
   refreshToken: {
     type: String,
@@ -22,7 +22,23 @@ const userSchema = mongoose.Schema({
   },
   provider: {
     type: String,
-    default: "local", //Local | Google
+    default: "local",
+  },
+  emailVerified: {
+    type: Boolean,
+    default: false,
+  },
+  emailVerificationCodeHash: {
+    type: String,
+  },
+  emailVerificationExpiresAt: {
+    type: Date,
+  },
+  passwordResetTokenHash: {
+    type: String,
+  },
+  passwordResetExpiresAt: {
+    type: Date,
   },
 });
 
