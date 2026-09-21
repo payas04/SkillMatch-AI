@@ -154,12 +154,13 @@ async function googleCallbackController(req, res) {
   try {
     const user = req.user; //attahced by passport
 
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+    const { accessToken, refreshToken } = generateAccessAndRefreshTokens(
       user._id,
       user.email,
     );
     user.refreshToken = refreshToken;
-    await user.save();
+    // 2. Save refreshToken in your database (User / Token model)
+    await userModel.findByIdAndUpdate(user._id, { refreshToken });
 
     res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
     const clientUrl = process.env.CLIENT_URL;
