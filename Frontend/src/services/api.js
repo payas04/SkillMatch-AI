@@ -45,19 +45,21 @@ api.interceptors.response.use(
     //error.response?.status is the status code of the response object that was returned from the server.
     //originalRequest._retry is a custom property that we add to the request configuration object to keep track of whether the request has been retried or not.
     // If the error is a 401 Unauthorized and the request has not been retried yet, we attempt to refresh the access token.
-
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
     // Do not attempt to refresh if the request was already an auth call
     const isAuthRoute =
       originalRequest.url?.includes("/auth/login") ||
       originalRequest.url?.includes("/auth/register") ||
-      originalRequest.url?.includes("/auth/refresh-token");
+      originalRequest.url?.includes("/auth/refresh-token") ||
+      originalRequest.url?.includes("/auth/google");
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
       !isAuthRoute
     ) {
-      // Mark the request as retried to prevent infinite loops
-      originalRequest._retry = true; // Mark as retried
+      originalRequest._retry = true;
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_API_BASE_URL}/auth/refresh-token`,

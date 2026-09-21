@@ -12,8 +12,9 @@ const refreshTokenCookieOptions = {
   httpOnly: true,
   secure: true, // MUST be true for HTTPS
   sameSite: "none", // MUST be 'none' for cross-domain (Vercel <-> Render)
-  partitioned: true, // REQUIRED by modern Chrome/Edge for cross-site cookies
+
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  path: "/",
 };
 /**
  * @name registerUserController
@@ -153,16 +154,19 @@ async function logoutUserController(req, res) {
 async function googleCallbackController(req, res) {
   try {
     const user = req.user; //attahced by passport
-
+    if (!user) {
+      throw new Error("Google authentication failed: user not found");
+    }
     const { accessToken, refreshToken } = generateAccessAndRefreshTokens(
       user._id,
       user.email,
     );
-    user.refreshToken = refreshToken;
+
     // 2. Save refreshToken in your database (User / Token model)
     await userModel.findByIdAndUpdate(user._id, { refreshToken });
 
     res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
+
     const clientUrl = process.env.CLIENT_URL;
     return res.redirect(`${clientUrl}/oauth-success?token=${accessToken}`);
   } catch (error) {

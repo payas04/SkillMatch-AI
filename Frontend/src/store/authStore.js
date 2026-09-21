@@ -31,13 +31,14 @@ const useAuthStore = create((set) => ({
 
   checkAuth: async () => {
     set({ isLoading: true });
+
     try {
-      // 1. Get initial access token from refresh cookie
       const { accessToken } = await authService.refresh();
+
       set({ accessToken });
 
-      // 2. Fetch authenticated user profile
       const { user } = await authService.getMe();
+
       set({ user });
     } catch {
       set({ user: null, accessToken: null });
