@@ -21,7 +21,9 @@ const RegisterPage = () => {
   const onSubmit = async (data) => {
     setApiError(null);
     try {
-      await registerUser(data);
+      const { confirmPassword, ...registrationData } = data;
+
+      await registerUser(registrationData);
       navigate("/home");
     } catch (err) {
       const serverMsg =
@@ -149,7 +151,29 @@ const RegisterPage = () => {
               </p>
             )}
           </div>
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-200 mb-1.5"
+            >
+              Confirm password
+            </label>
 
+            <input
+              {...register("confirmPassword")}
+              id="confirmPassword"
+              type="password"
+              autoComplete="new-password"
+              placeholder="Re-enter your password"
+              className="block w-full rounded-xl bg-white/5 border border-white/10 px-3.5 py-2.5 text-sm text-white placeholder:text-gray-500 outline-none transition focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400"
+            />
+
+            {errors.confirmPassword && (
+              <p className="text-xs text-rose-400 mt-1.5">
+                {errors.confirmPassword.message}
+              </p>
+            )}
+          </div>
           {/* Submit Button */}
           <div className="pt-2">
             <button
