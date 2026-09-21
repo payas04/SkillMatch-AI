@@ -7,9 +7,26 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const authService = {
   login: (credentials) =>
     api.post("/auth/login", credentials).then((res) => res.data),
-  register: (data) => api.post("/auth/register", data).then((res) => res.data),
+
+  register: (data) =>
+    api.post("/auth/register", data).then((res) => res.data),
+
+  verifyEmail: (data) =>
+    api.post("/auth/verify-email", data).then((res) => res.data),
+
+  resendVerification: (email) =>
+    api.post("/auth/resend-verification", { email }).then((res) => res.data),
+
+  forgotPassword: (email) =>
+    api.post("/auth/forgot-password", { email }).then((res) => res.data),
+
+  resetPassword: (data) =>
+    api.post("/auth/reset-password", data).then((res) => res.data),
+
   logout: () => api.post("/auth/logout").then((res) => res.data),
+
   getMe: () => api.get("/auth/get-me").then((res) => res.data),
+
   refresh: () =>
     axios
       .get(`${BASE_URL}/auth/refresh-token`, { withCredentials: true })
