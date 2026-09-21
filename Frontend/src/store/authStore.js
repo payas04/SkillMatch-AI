@@ -9,6 +9,7 @@ const useAuthStore = create((set) => ({
 
   setAccessToken: (accessToken) => set({ accessToken }),
   clearAuth: () => set({ user: null, accessToken: null }),
+
   login: async (credentials) => {
     const data = await authService.login(credentials);
     set({ user: data.user, accessToken: data.accessToken });
@@ -16,9 +17,7 @@ const useAuthStore = create((set) => ({
   },
 
   register: async (credentials) => {
-    const data = await authService.register(credentials);
-    set({ user: data.user, accessToken: data.accessToken });
-    return data;
+    return await authService.register(credentials);
   },
 
   logout: async () => {
@@ -34,11 +33,9 @@ const useAuthStore = create((set) => ({
 
     try {
       const { accessToken } = await authService.refresh();
-
       set({ accessToken });
 
       const { user } = await authService.getMe();
-
       set({ user });
     } catch {
       set({ user: null, accessToken: null });
