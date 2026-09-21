@@ -4,13 +4,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../zod/loginSchema";
 import useAuthStore from "../store/authStore";
+import { Eye, EyeOff } from "lucide-react";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const loginUser = useAuthStore((state) => state.login);
   const [apiError, setApiError] = useState(null);
-
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -114,7 +115,7 @@ const LoginPage = () => {
           </div>
 
           {/* Password Input */}
-          <div>
+          <div className="relative">
             <div className="flex items-center justify-between mb-1.5">
               <label
                 htmlFor="password"
@@ -131,13 +132,22 @@ const LoginPage = () => {
             </div>
             <input
               {...register("password")}
+              type={showPassword ? "text" : "password"}
               id="password"
-              type="password"
+              name="password"
               autoComplete="current-password"
               placeholder="••••••••"
               onChange={() => apiError && setApiError(null)}
-              className="block w-full rounded-xl bg-white/5 border border-white/10 px-3.5 py-2.5 text-sm text-white placeholder:text-gray-500 outline-none transition focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400"
+              className="block w-full pr-10  rounded-xl bg-white/5 border border-white/10 px-3.5 py-2.5 text-sm text-white placeholder:text-gray-500 outline-none transition focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
             {errors.password && (
               <p className="text-xs text-rose-400 mt-1.5">
                 {errors.password.message}
