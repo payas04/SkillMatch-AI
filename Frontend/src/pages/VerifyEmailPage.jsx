@@ -96,7 +96,7 @@ const VerifyEmailPage = () => {
           <p className="text-sm text-gray-400 mt-2">
             Enter the 6-digit verification code sent to your email.
           </p>
-          <span>{email}</span>
+          <span className="text-sm text-gray-200">{email}</span>
         </div>
         {error && (
           <p className="text-center text-sm text-red-400 mb-4">{error}</p>
