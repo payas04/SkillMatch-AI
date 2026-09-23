@@ -6,10 +6,17 @@ import {
   logoutUserController,
   refreshTokenController,
   registerUserController,
+  resendVerificationEmailController,
+  verifyEmailController,
 } from "../controllers/auth.controller.js";
 import passport from "passport";
 import { authUser } from "../middlewares/authMiddleware.js";
-import { loginSchema, registerSchema } from "../zod/auth.schema.js";
+import {
+  loginSchema,
+  registerSchema,
+  resendVerificationSchema,
+  verifyEmailSchema,
+} from "../zod/auth.schema.js";
 import { validate } from "../middlewares/validate.js";
 
 const authRouter = Router();
@@ -30,6 +37,16 @@ authRouter.post("/register", validate(registerSchema), registerUserController);
  *          + refresh token (httpOnly cookie).
  * @access  Public
  */
+authRouter.post(
+  "/verify-email",
+  validate(verifyEmailSchema),
+  verifyEmailController,
+);
+authRouter.post(
+  "/resend-verification",
+  validate(resendVerificationSchema),
+  resendVerificationEmailController,
+);
 authRouter.post("/login", validate(loginSchema), loginUserController);
 
 /**

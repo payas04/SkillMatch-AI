@@ -18,6 +18,7 @@ passport.use(
           if (user) {
             user.googleId = profile.id;
             user.provider = "google";
+            user.emailVerified = true;
             await user.save();
           } else {
             // Generate a unique fallback username
@@ -31,6 +32,7 @@ passport.use(
               email: profile.emails[0].value,
               googleId: profile.id,
               provider: "google",
+              emailVerified: true,
             });
           }
         }

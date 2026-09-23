@@ -24,7 +24,9 @@ const RegisterPage = () => {
       const { confirmPassword, ...registrationData } = data;
 
       await registerUser(registrationData);
-      navigate("/home");
+      navigate("/verify-email", {
+        state: { email: registrationData.email },
+      });
     } catch (err) {
       const serverMsg =
         err.response?.data?.message?.trim() ||

@@ -7,6 +7,7 @@ import PublicRoute from "../components/PublicRoute";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Interview from "../pages/Interview";
 import OAuthSucces from "../pages/OAuthSuccess";
+import VerifyEmailPage from "../pages/VerifyEmailPage";
 const router = createBrowserRouter([
   // Redirect root "/" to "/home"
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "/oauth-success",
         element: <OAuthSucces />,
+      },
+      {
+        path: "/verify-email",
+        element: <VerifyEmailPage />,
       },
     ],
   },

@@ -15,6 +15,14 @@ export const registerSchema = z.object({
     .max(128, "Password is too long"),
 });
 
+export const verifyEmailSchema = z.object({
+  email: z.string().trim().email("Invalid email"),
+  code: z.string().regex(/^\d{6}$/, "Verification code must be 6 digits"),
+});
+export const resendVerificationSchema = z.object({
+  email: z.string().trim().email("Invalid email"),
+});
+
 export const loginSchema = z.object({
   email: z.string().trim().email("Invalid email"),
 

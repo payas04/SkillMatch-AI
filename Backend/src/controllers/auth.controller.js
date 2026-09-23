@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
 import userModel from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import sendVerificationEmail from "../utils/email.js";
 import {
   generateAccessAndRefreshTokens,
   generateAccessToken,
@@ -16,6 +18,10 @@ const refreshTokenCookieOptions = {
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   path: "/",
 };
+async function generateVerificationCode() {
+  return crypto.randomInt(100000, 1000000).toString();
+}
+
 /**
  * @name registerUserController
  * @description register a new user, exports username, email and password
@@ -41,26 +47,41 @@ async function registerUserController(req, res) {
         });
       }
     }
+    const verificationCode = generateVerificationCode();
+    const verificationCodeHash = crypto
+      .createHash("sha256")
+      .update(verificationCode)
+      .digest("hex");
+    const verificationCodeExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await userModel.create({
       username,
       email,
       password: hashedPassword,
+      emailVerified: false,
+      emailVerificationCodeHash: verificationCodeHash,
+      emailVerificationCodeExpiresAt: verificationCodeExpiresAt,
     });
 
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
-      newUser._id,
+    await sendVerificationEmail(
       newUser.email,
+      newUser.username,
+      verificationCode,
     );
+
+    // const { accessToken, refreshToken } = generateAccessAndRefreshTokens(
+    //   newUser._id,
+    //   newUser.email,
+    // );
     //save refresh token to DB
-    newUser.refreshToken = refreshToken;
-    await newUser.save();
-    //setting refresh token as HTTP cookie
+    // newUser.refreshToken = refreshToken;
+    // await newUser.save();
+    // //setting refresh token as HTTP cookie
 
-    res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
+    // res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
 
-    return res.status(200).json({
-      message: "User Registered Successfully",
+    return res.status(201).json({
+      message: "Registration successful. Please verify your email.",
       accessToken,
       user: {
         id: newUser._id,
@@ -73,6 +94,106 @@ async function registerUserController(req, res) {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
+async function verifyEmailController(req, res) {
+  try {
+    const { email, code } = req.body;
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid or expired verification code",
+      });
+    }
+
+    if (user.emailVerified) {
+      return res.status(400).json({
+        message: "Email is already verified",
+      });
+    }
+
+    if (!user.emailVerificationCodeHash || !user.emailVerificationExpiresAt) {
+      return res.status(400).json({
+        message: "Invalid or expired verification code",
+      });
+    }
+    if (new Date() > user.emailVerificationExpiresAt) {
+      return res.status(400).json({
+        message: "Verification code has expired",
+      });
+    }
+    const submittedCodeHash = crypto
+      .createHash("sha256")
+      .update(code)
+      .digest("hex");
+
+    if (submittedCodeHash !== user.emailVerificationCodeHash) {
+      return res.status(400).json({
+        message: "Invalid or expired verification code",
+      });
+    }
+
+    user.emailVerified = true;
+    user.emailVerificationCodeHash = undefined;
+    user.emailVerificationExpiresAt = undefined;
+    await user.save();
+    return res.status(200).json({
+      message: "Email verified successfully",
+    });
+  } catch (error) {
+    console.error("Error in verifyEmailController", error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+}
+
+async function resendVerificationEmailController(req, res) {
+  try {
+    const { email } = req.body;
+
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(200).json({
+        message: "If an account exists, a verification email has been sent.",
+      });
+    }
+
+    if (user.emailVerified) {
+      return res.status(200).json({
+        message: "If an account exists, a verification email has been sent.",
+      });
+    }
+
+    const verificationCode = generateVerificationCode();
+
+    const verificationCodeHash = crypto
+      .createHash("sha256")
+      .update(verificationCode)
+      .digest("hex");
+
+    const verificationCodeExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    user.emailVerificationCodeHash = verificationCodeHash;
+    user.emailVerificationExpiresAt = verificationCodeExpiresAt;
+
+    await user.save();
+
+    await sendVerificationEmail(user.email, user.username, verificationCode);
+
+    return res.status(200).json({
+      message: "If an account exists, a verification email has been sent.",
+    });
+  } catch (error) {
+    console.error("Error in resendVerificationEmailController", error);
+
+    return res.status(200).json({
+      message: "If an account exists, a verification email has been sent.",
+    });
+  }
+}
+
 /**
  *@name loginUserController
  *@description Takes email and password from body
@@ -91,6 +212,11 @@ async function loginUserController(req, res) {
       return res.status(400).json({
         message:
           "This account was registered using Google. Please sign in with Google.",
+      });
+    }
+    if (!user.emailVerified) {
+      return res.status(403).json({
+        message: "Please verify your email before logging in.",
       });
     }
     const passwordMatch = await bcrypt.compare(password, user.password);
@@ -239,4 +365,6 @@ export {
   logoutUserController,
   refreshTokenController,
   getMeController,
+  verifyEmailController,
+  resendVerificationEmailController,
 };

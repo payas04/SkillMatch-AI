@@ -24,6 +24,16 @@ const userSchema = mongoose.Schema({
     type: String,
     default: "local", //Local | Google
   },
+  emailVerified: {
+    type: Boolean,
+    default: false,
+  },
+  emailVerificationCodeHash: {
+    type: String,
+  },
+  emailVerificationExpiresAt: {
+    type: Date,
+  },
 });
 
 const userModel = mongoose.model("users", userSchema);

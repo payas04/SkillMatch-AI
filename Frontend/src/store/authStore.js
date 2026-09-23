@@ -17,7 +17,6 @@ const useAuthStore = create((set) => ({
 
   register: async (credentials) => {
     const data = await authService.register(credentials);
-    set({ user: data.user, accessToken: data.accessToken });
     return data;
   },
 
