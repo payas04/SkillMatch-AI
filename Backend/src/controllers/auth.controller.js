@@ -18,7 +18,7 @@ const refreshTokenCookieOptions = {
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   path: "/",
 };
-async function generateVerificationCode() {
+function generateVerificationCode() {
   return crypto.randomInt(100000, 1000000).toString();
 }
 
@@ -60,7 +60,7 @@ async function registerUserController(req, res) {
       password: hashedPassword,
       emailVerified: false,
       emailVerificationCodeHash: verificationCodeHash,
-      emailVerificationCodeExpiresAt: verificationCodeExpiresAt,
+      emailVerificationExpiresAt: verificationCodeExpiresAt,
     });
 
     await sendVerificationEmail(
@@ -82,7 +82,6 @@ async function registerUserController(req, res) {
 
     return res.status(201).json({
       message: "Registration successful. Please verify your email.",
-      accessToken,
       user: {
         id: newUser._id,
         username: newUser.username,

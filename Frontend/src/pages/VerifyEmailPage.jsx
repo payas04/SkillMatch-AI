@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import OtpInput from "react-otp-input";
 import { useLocation, useNavigate } from "react-router";
+import { authService } from "../services/authService";
 
 const VerifyEmailPage = () => {
   const [otp, setOtp] = useState("");
